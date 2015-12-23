@@ -34,7 +34,7 @@ CC_COMMON_FLAGS := $(COMMON_FLAGS) -std=c99
 # library linker flags
 LD_COMMON_FLAGS := -T $(ROOT_DIR)/$(LD_SCRIPT) --entry ResetISR --gc-sections \
 	-L $(TIVAWARE_PATH)/driverlib/gcc -ldriver -nostdlib \
-	-L $(ARM_NONE_EABI_PATH) -lstdc++ -lc -lg -lsupc++ -lm
+	-L $(ARM_NONE_EABI_PATH) 
 
 # include flags
 INCLUDE_COMMON := -I. -I$(TIVAWARE_PATH)
