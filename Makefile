@@ -1,4 +1,4 @@
-CXX_SOURCES := src/main.cpp
+CXX_SOURCES := src/main.cpp src/MemoryManagement.cpp src/Utility.cpp
 C_SOURCES := src/startup.c
 ASM_SOURCES :=
 
@@ -17,6 +17,7 @@ FIRMWARE := $(OUTPUT_DIR)/firmware
 
 program: directories $(FIRMWARE)
 	@echo "Built Firmware"
+	@arm-none-eabi-size $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) -d
 
 $(FIRMWARE): $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS)
 	@$(LD) $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) $(LDFLAGS) -o $(FIRMWARE).tmp

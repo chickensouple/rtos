@@ -11,27 +11,44 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/can.h"
 
+
+#include "Task.hpp"
+#include "Scheduler.hpp"
+
 #define LED_RED GPIO_PIN_1
 #define LED_BLUE GPIO_PIN_2
 #define LED_GREEN GPIO_PIN_3
 
 extern "C" {
+void start();
+}
 
-int start()
+
+void start()
 {
-    ROM_SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED|LED_BLUE|LED_GREEN);
 
-   for (;;) {
-    	// set the red LED pin high, others low
-    	ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, LED_BLUE);
-    	ROM_SysCtlDelay(5000000);
-    	ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
-    	ROM_SysCtlDelay(5000000);
-    }
+	Scheduler<10> scheduler;
+	scheduler.addTask([](void*){return;}, 100, 100, nullptr);
 
-    return 1;
+	 ROM_SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
+	 ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	 ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED|LED_BLUE|LED_GREEN);
+
+	// for (;;) {
+	//  	// set the red LED pin high, others low
+	//  	ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, LED_BLUE);
+	//  	ROM_SysCtlDelay(5000000);
+	//  	ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
+	//  	ROM_SysCtlDelay(5000000);
+	//  }
+
+	//  return 1;
+	 // Task task1(1000, 1000);
+	 // Task task2(1000, 2000);
+
+
+
+
 }
 
-}
+
