@@ -8,9 +8,11 @@ struct Task {
 
 	State state;
 	void (*fn)(void*);
-	void* memoryBorder;
+	void* memoryBorderLower;
+	void* memoryBorderHigher;
 	uint32_t stackSize;
 	uint32_t heapSize;
+	uint8_t priority;
 
 };
 

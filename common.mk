@@ -22,7 +22,7 @@ LD := arm-none-eabi-ld
 OBJCOPY = arm-none-eabi-objcopy
 
 # compiler flags
-COMMON_FLAGS := -Os -Wall -Wno-unused-parameter \
+COMMON_FLAGS := -g -Wall -Wno-unused-parameter \
 	-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=softfp \
 	-pedantic -DPART_TM4C123GH6PM -ffunction-sections -fdata-sections \
 	-DTARGET_IS_BLIZZARD_RA1 -nostdlib -fno-exceptions
@@ -51,7 +51,8 @@ $(OBJECT_PATH)/%.cpp.o: %.cpp
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.((?!o)[a-zA-Z]*)/$$1.$$2/g' | \
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.o/$(subst /,\/,$(dir $@))$$1.cpp.o/g' > $@.d
 	@echo "Object [$@]"
-	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $<
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) -S -o $(addsuffix .s, $(basename $@)) $<
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) -c -o $@ $(addsuffix .s, $(basename $@))
 
 $(OBJECT_PATH)/%.c.o: %.c
 # mkdir will recreate the file structure of the original
@@ -60,7 +61,8 @@ $(OBJECT_PATH)/%.c.o: %.c
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.((?!o)[a-zA-Z]*)/$$1.$$2/g' | \
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.o/$(subst /,\/,$(dir $@))$$1.c.o/g' > $@.d
 	@echo "Object [$@]"
-	@$(CC) $(CCFLAGS) $(INCLUDES) -c -o $@ $<
+	@$(CC) $(CCFLAGS) $(INCLUDES) -S -o $(addsuffix .s, $(basename $@)) $<
+	@$(CC) $(CCFLAGS) $(INCLUDES) -c -o $@ $(addsuffix .s, $(basename $@))
 
 $(OBJECT_PATH)/%.s.o: %.s
 # mkdir will recreate the file structure of the original

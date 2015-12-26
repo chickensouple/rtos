@@ -7,6 +7,12 @@
 
 namespace MemoryManagement {
 
+/**
+ * @brief Allocates memory for a task
+ * @details will return nullptr if there is no space to allocate
+ * @param size size of memory to allocate
+ * @return pointer to start of memory
+ */
 void* talloc(uint32_t size);
 
 void* kmalloc(uint32_t size);

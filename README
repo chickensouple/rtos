@@ -1,0 +1,8 @@
+To Debug:
+
+sudo openocd --file /usr/share/openocd/scripts/board/ek-lm4f120xl.cfg
+arm-none-eabi-gdb bin/firmware.obj
+(gdb) target extended-remote :3333
+(gdb) monitor reset halt
+(gdb) load
+(gdb) monitor reset init

@@ -1,5 +1,5 @@
-CXX_SOURCES := src/main.cpp src/MemoryManagement.cpp src/Utility.cpp
-C_SOURCES := src/startup.c
+CXX_SOURCES := src/main.cpp src/MemoryManagement.cpp src/Scheduler.cpp src/Utility.cpp
+C_SOURCES := src/startup.c src/hal/Timer.c src/uartstdio.c
 ASM_SOURCES :=
 
 LM4FLASH = /home/clark/Documents/lm4tools/lm4flash/lm4flash
@@ -20,9 +20,8 @@ program: directories $(FIRMWARE)
 	@arm-none-eabi-size $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) -d
 
 $(FIRMWARE): $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS)
-	@$(LD) $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) $(LDFLAGS) -o $(FIRMWARE).tmp
-	@$(OBJCOPY) -O binary $(FIRMWARE).tmp $@.bin
-	@rm $(FIRMWARE).tmp
+	@$(LD) $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) $(LDFLAGS) -o $(FIRMWARE).obj
+	@$(OBJCOPY) -O binary $(FIRMWARE).obj $@.out
 
 clean: 
 	@rm -f -r $(BUILD_DIR)
@@ -36,7 +35,7 @@ directories:
 	@mkdir -p $(OUTPUT_DIR)
 
 upload: all
-	$(LM4FLASH) $(FIRMWARE).bin
+	$(LM4FLASH) $(FIRMWARE).out
 	@echo "Finished Upload"
 
 .PHONY: all program clean cleandep directories upload

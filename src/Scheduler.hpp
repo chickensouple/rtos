@@ -4,25 +4,22 @@
 #include <cstdint>
 #include "Task.hpp"
 #include "MemoryManagement.hpp"
+#include "hal/Timer.h"
 
-template <uint32_t N>
-class Scheduler {
-public:
-	Scheduler();
+#define SCHEDULER_NUM_TASKS 10
 
-	bool addTask(void (*fn)(void*), 
-		uint32_t stackSize, 
-		uint32_t heapSize, 
-		void* var);
+namespace Scheduler {
 
-	void run();
+void init();
 
-protected:
-	Task _tasks[N];
-	uint32_t _taskIdx;
-	bool _running;
-};
+bool addTask(void (*fn)(void*), 
+	uint8_t priority,
+	uint32_t stackSize, 
+	uint32_t heapSize, 
+	void* var);
 
-#include "SchedulerImplementation.hpp"
+void run();
+
+}
 
 #endif /* _SCHEDULER_HPP */

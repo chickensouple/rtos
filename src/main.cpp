@@ -10,6 +10,8 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/pin_map.h"
 #include "driverlib/can.h"
+#include "driverlib/uart.h"
+#include "uartstdio.h"
 
 
 #include "Task.hpp"
@@ -23,32 +25,32 @@ extern "C" {
 void start();
 }
 
+void ledTask(void*) {
+	for (;;) {
+		// set the red LED pin high, others low
+		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, LED_BLUE);
+		ROM_SysCtlDelay(5000000);
+		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
+		ROM_SysCtlDelay(5000000);
+	}
+}
 
 void start()
 {
 
-	Scheduler<10> scheduler;
-	scheduler.addTask([](void*){return;}, 100, 100, nullptr);
+	ROM_SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED|LED_BLUE|LED_GREEN);
 
-	 ROM_SysCtlClockSet(SYSCTL_SYSDIV_4|SYSCTL_USE_PLL|SYSCTL_XTAL_16MHZ|SYSCTL_OSC_MAIN);
-	 ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-	 ROM_GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, LED_RED|LED_BLUE|LED_GREEN);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+	GPIOPinConfigure(GPIO_PA0_U0RX);
+	GPIOPinConfigure(GPIO_PA1_U0TX);
+	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
-	// for (;;) {
-	//  	// set the red LED pin high, others low
-	//  	ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, LED_BLUE);
-	//  	ROM_SysCtlDelay(5000000);
-	//  	ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
-	//  	ROM_SysCtlDelay(5000000);
-	//  }
-
-	//  return 1;
-	 // Task task1(1000, 1000);
-	 // Task task2(1000, 2000);
-
-
-
-
+	Scheduler::init();
+	Scheduler::addTask(ledTask, 0, 100, 100, nullptr);
+	Scheduler::run();
 }
 
 
