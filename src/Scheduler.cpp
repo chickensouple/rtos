@@ -12,7 +12,6 @@
 #include "uartstdio.h"
 #include "driverlib/systick.h"
 
-
 namespace Scheduler {
 
 static Task _tasks[SCHEDULER_NUM_TASKS];
@@ -20,7 +19,6 @@ static uint32_t _taskIdx;
 static bool _running;
 
 void idleTask(void*);
-void irq(void);
 
 void init() {
 	_taskIdx = 0;
@@ -28,7 +26,7 @@ void init() {
 
 	addTask(idleTask,
 		0,
-		20,
+		200,
 		0,
 		nullptr);
 }
@@ -56,15 +54,25 @@ bool addTask(void (*fn)(void*),
 		return false;
 	}
 
-	void* memoryBorderHigher = (void*) (((uint8_t*) memoryBorderLower) + stackSize + heapSize);
+	void* memoryBorderHigher = (void*) (((uint8_t*) memoryBorderLower) + stackSize + 
+		heapSize);
 
-	_tasks[_taskIdx++] = { Task::READY, 
-		fn, 
-		memoryBorderLower, 
-		memoryBorderHigher, 
-		stackSize, 
-		heapSize, 
-		priority };
+	Task& task = _tasks[_taskIdx++];
+	task.state = Task::READY;
+	task.fn = fn;
+	task.memoryBorderLower = memoryBorderLower;
+	task.memoryBorderHigher = memoryBorderHigher;
+	task.stackSize = stackSize;
+	task.heapSize = heapSize;
+	task.priority = priority;
+	// _tasks[_taskIdx++] = { Task::READY, 
+	// 	fn, 
+	// 	memoryBorderLower, 
+	// 	memoryBorderHigher, 
+	// 	stackSize, 
+	// 	heapSize, 
+	// 	priority,
+	// 	{0, 1, 2}};
 
 	return true;
 }
@@ -74,7 +82,7 @@ void run() {
 	_running = true;
 
 	// setup timer
-	schedulerTimerSet(irq, 100000);
+	schedulerTimerSet(interruptHandler, 100000);
 
 	schedulerTimerEnable();
 
@@ -85,9 +93,15 @@ void idleTask(void*) {
 	while (1) { };
 }
 
-
-void irq(void) {
-
+void schedule(Context** oldContext, Context** newContext) {
+	static int i = 0;
+	int nextI = i + 1;
+	if (nextI > 1) {
+		nextI = 0;
+	}
+	*oldContext = &(_tasks[i].context);
+	*newContext = &(_tasks[nextI].context);
+	i = nextI;
 }
 
 

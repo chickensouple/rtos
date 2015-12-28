@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "Context.h"
+#include "Context.hpp"
 
 const uint32_t KernelTaskMemorySize = 15360;
 const uint32_t KernelHeapSize = 5120;

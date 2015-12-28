@@ -5,8 +5,13 @@
 #include "Task.hpp"
 #include "MemoryManagement.hpp"
 #include "hal/Timer.h"
+#include "hal/Context.hpp"
 
 #define SCHEDULER_NUM_TASKS 10
+
+#ifdef __cplusplus 
+extern "C" {
+#endif
 
 namespace Scheduler {
 
@@ -20,6 +25,12 @@ bool addTask(void (*fn)(void*),
 
 void run();
 
+void schedule(Context**, Context**);
 }
+
+
+#ifdef __cplusplus 
+}
+#endif
 
 #endif /* _SCHEDULER_HPP */
