@@ -1,8 +1,15 @@
 To Debug:
 
+1) start openocd
 sudo openocd --file /usr/share/openocd/scripts/board/ek-lm4f120xl.cfg
+
+2) start gdb and execute following commands
 arm-none-eabi-gdb bin/firmware.obj
 (gdb) target extended-remote :3333
 (gdb) monitor reset halt
 (gdb) load
 (gdb) monitor reset init
+
+Or in lieu of step 2
+you can run
+arm-none-eabi-gdb bin/firmware.obj --comand=debug.gdb

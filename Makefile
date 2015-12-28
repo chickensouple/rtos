@@ -45,6 +45,7 @@ LD_FLAGS := -T $(ROOT_DIR)/$(LD_SCRIPT) --entry ResetISR --gc-sections \
 # include flags
 INCLUDES := -I. -I$(TIVAWARE_PATH)
 
+# adding prefix to objects, so that they will be put in correct directory
 OBJECT_PATH := $(subst $(ROOT_DIR), $(BUILD_DIR), $(shell pwd))
 CXX_OBJECTS := $(addprefix $(OBJECT_PATH)/, $(CXX_SOURCES:.cpp=.cpp.o))
 C_OBJECTS := $(addprefix $(OBJECT_PATH)/, $(C_SOURCES:.c=.c.o))
@@ -61,6 +62,7 @@ DEP_FILES := $(shell find $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST)
 $(OBJECT_PATH)/%.cpp.o: %.cpp
 # mkdir will recreate the file structure of the original
 	@mkdir -p $(dir $@)
+# taking the output of dependency generation, and formatting it correctly
 	@$(CXX) -MM $(CXX_FLAGS) $(INCLUDES) $< | \
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.((?!o)[a-zA-Z]*)/$$1.$$2/g' | \
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.o/$(subst /,\/,$(dir $@))$$1.cpp.o/g' > $@.d
@@ -71,6 +73,7 @@ $(OBJECT_PATH)/%.cpp.o: %.cpp
 $(OBJECT_PATH)/%.c.o: %.c
 # mkdir will recreate the file structure of the original
 	@mkdir -p $(dir $@)
+# taking the output of dependency generation, and formatting it correctly
 	@$(CC) -MM $(CC_FLAGS) $(INCLUDES) $< | \
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.((?!o)[a-zA-Z]*)/$$1.$$2/g' | \
 		perl -pe 's/([a-zA-Z0-9_\/-]*)\.o/$(subst /,\/,$(dir $@))$$1.c.o/g' > $@.d
@@ -83,7 +86,6 @@ $(OBJECT_PATH)/%.s.o: %.s
 	@mkdir -p $(dir $@)
 	@echo "Object [$@]"
 	@$(CC) $(CC_FLAGS) $(INCLUDES) -c -o $@ $<
-
 
 $(FIRMWARE): $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS)
 	@$(LD) $(CXX_OBJECTS) $(C_OBJECTS) $(ASM_OBJECTS) $(LD_FLAGS) -o $(FIRMWARE).obj
