@@ -1,5 +1,5 @@
-#include <stdbool.h>
-#include <stdint.h>
+#include <cstdint>
+#include <cstddef>
 
 #include "inc/hw_types.h"
 #include "inc/hw_gpio.h"
@@ -11,10 +11,9 @@
 #include "driverlib/pin_map.h"
 #include "driverlib/can.h"
 #include "driverlib/uart.h"
-#include "uartstdio.h"
+// #include "uartstdio.h"
 
-
-#include "Task.hpp"
+#include "common/Task.hpp"
 #include "Scheduler.hpp"
 
 #define LED_RED GPIO_PIN_1
@@ -49,8 +48,11 @@ void start()
 	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
 	Scheduler::init();
-	Scheduler::addTask(ledTask, 0, 100, 100, nullptr);
 	Scheduler::run();
+
+	// Scheduler::init();
+	// Scheduler::addTask(ledTask, 0, 100, 100, nullptr);
+	// Scheduler::run();
 }
 
 

@@ -1,7 +1,11 @@
 export MAKEFLAGS=--no-print-directory
 
-CXX_SOURCES := src/main.cpp src/MemoryManagement.cpp src/Scheduler.cpp src/Utility.cpp src/hal/Context.cpp
-C_SOURCES := src/startup.c src/hal/Timer.c src/uartstdio.c 
+CXX_SOURCES := src/rtos/main.cpp \
+	src/rtos/Core.cpp \
+	src/rtos/Scheduler.cpp \
+	src/hal/archs/cortexm4f/Timer.cpp \
+	src/hal/archs/cortexm4f/MainIRQ.cpp 
+C_SOURCES := src/rtos/startup.c 
 ASM_SOURCES :=
 
 # directory variables
@@ -43,7 +47,7 @@ LD_FLAGS := -T $(ROOT_DIR)/$(LD_SCRIPT) --entry ResetISR --gc-sections \
 	-L $(ARM_NONE_EABI_PATH) 
 
 # include flags
-INCLUDES := -I. -I$(TIVAWARE_PATH)
+INCLUDES := -I. -Isrc -I$(TIVAWARE_PATH)
 
 # adding prefix to objects, so that they will be put in correct directory
 OBJECT_PATH := $(subst $(ROOT_DIR), $(BUILD_DIR), $(shell pwd))
