@@ -2,8 +2,7 @@
 
 namespace Core {
 
-uint8_t KernelStack[KERNEL_STACK_SIZE];
-void* KernelStackPtr = &(KernelStack[KERNEL_STACK_SIZE - 1]);
+void* KernelStackPtr = (void*) KERNEL_STACK_BORDER;
 
 Task TaskArr[NUM_TASKS];
 

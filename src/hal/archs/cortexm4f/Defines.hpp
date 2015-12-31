@@ -2,6 +2,7 @@
 #define _DEFINES_HPP
 
 #define KERNEL_STACK_SIZE 	1024
+#define KERNEL_STACK_BORDER 0x20008000
 #define NUM_TASKS			20
 
 #endif /* _DEFINES_HPP */

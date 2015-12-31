@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cstddef>
+#include "hal/Hal.hpp"
 
 struct Task {
 	enum State : size_t { READY, RUNNING, BLOCKED };
@@ -17,8 +18,7 @@ struct Task {
 	uint8_t priority;
 
 
-	uint8_t contextStacked;
-	uint8_t usingFpu;
+	Context context;
 };
 
 #endif /* _TASK_HPP */
