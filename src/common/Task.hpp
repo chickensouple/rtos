@@ -8,12 +8,12 @@
 struct Task {
 	enum State : size_t { READY, RUNNING, BLOCKED };
 
-	State state;
 	void (*fn)(void*);
+	State state;
 	size_t stackSize;
 	size_t heapSize;
-	void* memLow;
-	void* memHigh;
+	void* memLow; // 
+	void* memHigh; // start of stack
 	void* memSeparator;
 	uint8_t priority;
 
