@@ -92,8 +92,7 @@ void mainInterruptHandler(void) {
 	"LDR 		R1,[R0,#0]\n\t" // move R0's value on stack into R1
 	"PUSH 		{R1}\n\t" // move R0 onto Task Stack
 	"POP 		{R0-R1}\n\t"
-	"ADD 		SP,SP,#4\n\t"
-	"LDR 		PC,[SP,#-4]\n\t"
+	"POP 		{PC}\n\t"
 
 // stores fpu registers to context
 "main_interrupt_store_fpu:\n\t"
@@ -123,53 +122,33 @@ void mainInterruptHandler(void) {
 		[contextOffset] "r" (contextOffset),
 		[stackStartOffset] "r" (stackStartOffset)
 	);
-
-
-
-	// MAIN_INTERUPT_POP_CONTEXT NEEDS TO BE REWRITTEN
 	
 	// Input: R12 is set to 1, if stacked context contains FPU registers
 	// Ouput: none
 	// Modifier: R12 register, will pop the context from the stack
 	asm volatile (
 "main_interrupt_pop_context:\n\t"
-	// if (R12 == 1), pop FPU registers
 	"CMP 		R12,#1\n\t"
 	"BEQ 		main_interrupt_pop_context_2\n\t"
-	// POP normal registers
 "main_interrupt_pop_context_1:\n\t"
-	// POP data registers except R12
-	"POP 		{R4-R11,R0-R3}\n\t"
-	// POP APSR
+	"POP 		{R0-R3}\n\t" 
 	"ADD 		R12,SP,#12\n\t"
 	"LDR 		R12,[R12,#0]\n\t"
 	"MSR 		APSR_nzcvq,R12\n\t"
-	"MOV 		R12,#16\n\t"
-	"BEQ 		main_interrupt_pop_context_3\n\t"
-"main_interrupt_pop_context_4:\n\t"
-	// Move SP to correct location
-	"ADD 		SP,SP,R12\n\t"
-	"SUB 		R12,SP,R12\n\t"
-	// Load PC into LR for temp storage
-	"LDR 		LR,[R12,#8]\n\t"
-	// Push PC onto actual stack top
-	"PUSH 		{LR}\n\t"
-	// Load LR and R12
-	"LDR 		LR,[R12,#4]\n\t"
-	"LDR 		R12,[R12,#0]\n\t"
-	// Pop of PC
-	"POP 		{PC}\n\t"
-
-// Finish popping off all registers
-"main_interrupt_pop_context_3:\n\t"
-	"ADD 		R12,R12,#68\n\t"
-	"B 			main_interrupt_pop_context_3\n\t"
-// pop off FPU registers
+	"POP 		{R12}\n\t"
+	"POP 		{LR}\n\t"
+	"BEQ 		main_interrupt_pop_context_4\n\t"
+	"ADD 		SP,SP,#8\n\t"
+	"LDR 		PC,[SP,#-8]\n\t"
 "main_interrupt_pop_context_2:\n\t"
-	"ADD 		R12,SP,#64\n\t"
-	"VLDMIA 	R12!,{S0-S15}\n\t"
+	"ADD 		R12,SP,#32\n\t"
+	"VLDMIA		R12!,{S0-S15}\n\t"
 	"LDR 		R12,[R12,#0]\n\t"
 	"VMSR 		FPSCR,R12\n\t"
 	"B 			main_interrupt_pop_context_1\n\t"
+// pop FPU and Normal regs off stack
+"main_interrupt_pop_context_4:\n\t"
+	"ADD 		SP,SP,#76\n\t"
+	"LDR 		PC,[SP,#-76]\n\t"
 	);
 }

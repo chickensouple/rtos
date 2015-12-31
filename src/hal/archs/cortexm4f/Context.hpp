@@ -41,6 +41,10 @@ struct Context {
 	int32_t APSR;
 	int32_t SP;
 	int32_t PC;
+
+	Context() :
+		valid(false),
+		usingFpu(false) {}
 };
 
 #endif /* _CONTEXT_HPP */
