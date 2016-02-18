@@ -3,7 +3,11 @@
 
 extern "C" {
 
-void mainInterruptHandler(void) __attribute(( naked ));
+void PendSVHandler(void) __attribute(( naked ));
+
+void SysTickHandler(void);
+
+void SetPendSV(void);
 
 }
 

@@ -20,14 +20,14 @@ void saveContext(Context* context) {
 	// R2
 	// R1
 	// R0
-	
-	register Context* contextPtr asm("r1") = context;
+
+	register Context* contextPtr asm("r0") = context;
 	register int stackPtrOffset asm("r2") = offsetof(Context, stackPtr);
 
 	asm volatile(
 		// check if floating point is used
-		"mrs 		r0,CONTROL\n\t"
-		"tst		r0,#4\n\t"
+		"mrs 		r1,CONTROL\n\t"
+		"tst		r1,#4\n\t"
 		
 		// floating point
 		"it 		eq\n\t"
@@ -44,7 +44,7 @@ void saveContext(Context* context) {
 }
 
 void loadContext(Context* context) {
-	register Context* contextPtr asm("r1") = context;
+	register Context* contextPtr asm("r0") = context;
 	register int stackPtrOffset asm("r2") = offsetof(Context, stackPtr);
 
 	asm volatile(
@@ -53,8 +53,8 @@ void loadContext(Context* context) {
 		"pop 		{r4-r11,lr}\n\t"
 
 		// check if floating point is used
-		"mrs 		r0,CONTROL\n\t"
-		"tst		r0,#4\n\t"
+		"mrs 		r1,CONTROL\n\t"
+		"tst		r1,#4\n\t"
 
 		"it 		eq\n\t"
 		"vldmiaeq 	sp!,{s16-s31}\n\t"
@@ -64,6 +64,10 @@ void loadContext(Context* context) {
 		: [contextPtr] "r" (contextPtr),
 			[stackPtrOffset] "r" (stackPtrOffset)
 		);
+}
+
+void yield(void) {
+
 }
 
 

@@ -3,19 +3,17 @@
 
 #include "common/Task.hpp"
 
-extern "C" {
-
 namespace Scheduler {
 
 void init(void);
 
 void run(void);
 
-void schedule(Task** currTask, Task**  nextTask);
+Task* getCurrentTask(void);
+
+Task* getNextTask(void);
 
 void idle(void*);
-
-}
 
 }
 

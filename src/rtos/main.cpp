@@ -15,6 +15,7 @@
 
 #include "common/Task.hpp"
 #include "Scheduler.hpp"
+#include "hal/archs/cortexm4f/MainIRQ.hpp"
 
 #define LED_RED GPIO_PIN_1
 #define LED_BLUE GPIO_PIN_2
@@ -58,11 +59,12 @@ void start()
 	GPIOPinConfigure(GPIO_PA1_U0TX);
 	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
-	blueLedTask(nullptr);
+	SetPendSV();
 
-	// Scheduler::init();
-	// Scheduler::addTask(ledTask, 0, 100, 100, nullptr);
-	// Scheduler::run();
+	// blueLedTask(nullptr);
+
+
+
 }
 
 

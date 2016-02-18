@@ -11,12 +11,9 @@ struct Task {
 	void (*fn)(void*);
 	State state;
 	size_t stackSize;
-	size_t heapSize;
-	void* memLow; // 
+	void* memLow;
 	void* memHigh; // start of stack
-	void* memSeparator;
 	uint8_t priority;
-
 
 	Context context;
 };

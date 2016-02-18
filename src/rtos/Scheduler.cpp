@@ -2,49 +2,44 @@
 #include "Core.hpp"
 #include "hal/Hal.hpp"
 
+extern void redLedTask(void*);
+extern void blueLedTask(void*);
+
 namespace Scheduler {
 
-void test1(void*) {
-	int a = 2;
-}
+static int currTask = 0;
 
 void init(void) {
-	Task& idleTask = Core::TaskArr[0];
-	idleTask.state = Task::READY;
-	idleTask.fn = Scheduler::idle;
-	idleTask.stackSize = 200;
-	idleTask.heapSize = 0;
-	idleTask.priority = 0;
-	idleTask.memHigh = (void*) 0x20005000;
-
-	Task& task1 = Core::TaskArr[1];
+	Task& task1 = Core::TaskArr[0];
 	task1.state = Task::READY;
-	task1.fn = test1;
-	task1.stackSize = 800;
-	task1.heapSize = 200;
-	task1.priority = 1;
-	task1.memHigh = (void*) 0x20004500;
+	task1.fn = redLedTask;
+	task1.stackSize = 200;
+	task1.priority = 0;
+	task1.memHigh = (void*) 0x20005000;
 
+	Task& task2 = Core::TaskArr[1];
+	task2.state = Task::READY;
+	task2.fn = blueLedTask;
+	task2.stackSize = 800;
+	task2.priority = 1;
+	task2.memHigh = (void*) 0x20003000;
 }
 
 void run(void) {
-	osTimerSet(mainInterruptHandler, 100000);
+	osTimerSet(SysTickHandler, 100000);
 
 	osTimerEnable();
 
 	while (1);
 }
 
-void schedule(Task** currTask, Task**  nextTask) {
-	static int currTaskIdx = 0;
-	int nextTaskIdx = currTaskIdx + 1;
-	if (nextTaskIdx > 1) {
-		nextTaskIdx = 0;
-	}
+Task* getCurrentTask(void) {
+	return &Core::TaskArr[currTask];
+}
 
-	*currTask = &(Core::TaskArr[currTaskIdx]);
-	*nextTask = &(Core::TaskArr[nextTaskIdx]);
-	currTaskIdx = nextTaskIdx;
+Task* getNextTask(void) {
+	currTask = 1 - currTask;
+	return &Core::TaskArr[currTask];
 }
 
 void idle(void*) {
