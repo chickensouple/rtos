@@ -12,4 +12,18 @@ arm-none-eabi-gdb bin/firmware.obj
 
 Or in lieu of step 2
 you can run
-arm-none-eabi-gdb bin/firmware.obj --comand=debug.gdb
+arm-none-eabi-gdb bin/firmware.obj --command=debug.gdb
+
+
+
+Core Registers Description:
+http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0553a/CHDBIBGJ.html
+
+Exception Description:
+http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0553a/Babefdjc.html
+
+Lazy Stacking Description:
+http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dai0298a/DAFGGBJD.html
+
+xPSR Description:
+http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.ddi0413d/ch02s02s02.html

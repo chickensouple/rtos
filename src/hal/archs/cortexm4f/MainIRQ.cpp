@@ -64,7 +64,7 @@ void mainInterruptHandler(void) {
 	"ADD 		R1,R1,%[contextOffset]\n\t" // apply context offset
 	// if context is not valid, simply load stack pointer and call the function
 	"LDR 		R5,[R1],#4\n\t"
-	"CMP 		R5,#1\n\t"
+	"CMP 		R5,#0\n\t"
 	"BEQ		main_interrupt_load_start\n\t"
 	// load context registers
 "main_interrupt_load_registers:\n\t"

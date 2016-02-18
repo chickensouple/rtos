@@ -24,15 +24,26 @@ extern "C" {
 void start();
 }
 
-void ledTask(void*) {
+void redLedTask(void*) {
 	for (;;) {
 		// set the red LED pin high, others low
+		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, LED_RED);
+		ROM_SysCtlDelay(5000000);
+		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
+		ROM_SysCtlDelay(5000000);
+	}
+}
+
+void blueLedTask(void*) {
+	for (;;) {
+		// set the blue LED pin high, others low
 		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, LED_BLUE);
 		ROM_SysCtlDelay(5000000);
 		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
 		ROM_SysCtlDelay(5000000);
 	}
 }
+
 
 void start()
 {
@@ -47,8 +58,7 @@ void start()
 	GPIOPinConfigure(GPIO_PA1_U0TX);
 	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
-	Scheduler::init();
-	Scheduler::run();
+	blueLedTask(nullptr);
 
 	// Scheduler::init();
 	// Scheduler::addTask(ledTask, 0, 100, 100, nullptr);
