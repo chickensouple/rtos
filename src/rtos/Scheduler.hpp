@@ -5,6 +5,8 @@
 
 namespace Scheduler {
 
+typedef void (*taskFunc)(void*);
+
 void init(void);
 
 void run(void);
@@ -12,6 +14,8 @@ void run(void);
 Task* getCurrentTask(void);
 
 Task* getNextTask(void);
+
+void addTask(taskFunc task, void* args);
 
 void idle(void*);
 

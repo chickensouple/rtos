@@ -42,6 +42,10 @@ Task* getNextTask(void) {
 	return &Core::TaskArr[currTask];
 }
 
+void addTask(taskFunc task, void* args) {
+	Core::TaskArr[currTask].fn = task;
+}
+
 void idle(void*) {
 	while (1) { }
 }

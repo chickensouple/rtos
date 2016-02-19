@@ -11,11 +11,14 @@ extern Task* getNextTask(void);
 
 void PendSVHandler(void) {
 	// need to write in ASM to make sure we are using right registers
-	Task* currTask = Scheduler::getCurrentTask();
-	Task* nextTask = Scheduler::getNextTask();
+	register Task* currTask asm("r0") = Scheduler::getCurrentTask();
+	register Task* nextTask asm("r1") = Scheduler::getNextTask();
 
-	saveContext(&currTask->context);
-	loadContext(&nextTask->context);
+	register Context* currContext asm("r0") = &currTask->context;
+	register Context* nextContext asm("r1") = &nextTask->context;
+
+	saveContext(currContext);
+	loadContext(nextContext);
 }
 
 void SysTickHandler(void) {
