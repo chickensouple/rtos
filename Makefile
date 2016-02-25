@@ -1,12 +1,12 @@
 export MAKEFLAGS=--no-print-directory
 
 CXX_SOURCES := src/rtos/main.cpp \
-	src/rtos/Core.cpp \
 	src/rtos/Scheduler.cpp \
-	src/hal/archs/cortexm4f/Timer.cpp \
-	src/hal/archs/cortexm4f/MainIRQ.cpp \
-	src/hal/archs/cortexm4f/Context.cpp
+	src/hal/cortexm4f/Timer.cpp \
+	src/hal/cortexm4f/IRQHandlers.cpp \
+	src/hal/cortexm4f/Context.cpp
 C_SOURCES := src/rtos/startup.c 
+
 ASM_SOURCES :=
 
 # directory variables
