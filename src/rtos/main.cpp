@@ -30,6 +30,7 @@ void redLedTask(void*) {
 		ROM_SysCtlDelay(5000000);
 		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
 		ROM_SysCtlDelay(5000000);
+		Scheduler::yield();
 	}
 }
 
@@ -40,6 +41,7 @@ void blueLedTask(void*) {
 		ROM_SysCtlDelay(5000000);
 		ROM_GPIOPinWrite(GPIO_PORTF_BASE, LED_RED|LED_GREEN|LED_BLUE, 0);
 		ROM_SysCtlDelay(5000000);
+		Scheduler::yield();
 	}
 }
 
@@ -57,7 +59,10 @@ void start()
 	GPIOPinConfigure(GPIO_PA1_U0TX);
 	GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
 
+	Scheduler::addTask(redLedTask, nullptr, 0, 5000);
+	Scheduler::addTask(blueLedTask, nullptr, 0, 5000);
 	Scheduler::init();
+	Scheduler::run();
 
 	// SetPendSV();
 

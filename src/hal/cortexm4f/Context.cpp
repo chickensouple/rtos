@@ -37,4 +37,9 @@ void setupContext(Context* context, void* stackStart) {
 		);
 }
 
+void setContext(Context* context) {
+	loadContext
+}
+
+
 }

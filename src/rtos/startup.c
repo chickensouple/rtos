@@ -46,6 +46,7 @@ extern void start(void);
 extern void PendSVHandler(void);
 extern void SysTickHandler(void);
 
+static uint8_t initialStack[1000];
 
 //*****************************************************************************
 //
@@ -56,7 +57,8 @@ extern void SysTickHandler(void);
 __attribute__ ((section(".isr_vector")))
 void (* const g_pfnVectors[])(void) =
 {
-	(void (*)(void))0x20008000,				// The initial stack pointer
+	// (void (*)(void))0x20008000,				// The initial stack pointer
+	(void (*)(void))(initialStack + sizeof(initialStack)), // The initial stack pointer
 	ResetISR,                               // The reset handler
 	NmiSR,                                  // The NMI handler
 	FaultISR,                               // The hard fault handler
@@ -225,6 +227,7 @@ extern unsigned long _data;
 extern unsigned long _edata;
 extern unsigned long _bss;
 extern unsigned long _ebss;
+extern unsigned long end;
 
 //*****************************************************************************
 //
@@ -240,7 +243,6 @@ void
 ResetISR(void)
 {
 	unsigned long *pulSrc, *pulDest;
-
 	//
 	// Copy the data segment initializers from flash to SRAM.
 	//

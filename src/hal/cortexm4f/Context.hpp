@@ -22,9 +22,8 @@ const int stackPtrOffset = offsetof(Context, stackPtr);
 		"vstmdbeq 	sp!,{s16-s31}\n\t" \
 		"push 		{r4-r11,lr}\n\t" \
 		"str 		sp,[r0, %[stackPtrOffset]]\n\t" \
-		"bx			lr\n\t" \
 		: \
-		: [stackPtrOffset] "i" (Context::stackPtrOffset) \
+		: [stackPtrOffset] "i" (stackPtrOffset) \
 		);
 
 #define loadContext \
@@ -39,10 +38,12 @@ const int stackPtrOffset = offsetof(Context, stackPtr);
 		/* TODO: need to reenable floating point context */ \
 		"bx			lr\n\t"	\
 		: \
-		: [stackPtrOffset] "i" (Context::stackPtrOffset) \
+		: [stackPtrOffset] "i" (stackPtrOffset) \
 		);
 
 void setupContext(Context* context, void* stackStart);
+
+void setContext(Context* context);
 
 }
 

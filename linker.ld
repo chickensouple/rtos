@@ -35,4 +35,5 @@ SECTIONS
         _ebss = .;
     } > SRAM
 
+    PROVIDE (end = .);
 }

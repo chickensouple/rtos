@@ -14,6 +14,8 @@ void init(void);
 
 void run(void);
 
+void yield(void);
+
 Context::Context* getCurrentContext(void);
 
 Context::Context* getNextContext(void);

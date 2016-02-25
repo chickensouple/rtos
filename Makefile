@@ -45,7 +45,7 @@ CC_FLAGS := $(COMMON_FLAGS) -std=gnu99
 # library linker flags
 LD_FLAGS := -T $(ROOT_DIR)/$(LD_SCRIPT) --entry ResetISR --gc-sections \
 	-L $(TIVAWARE_PATH)/driverlib/gcc -ldriver \
-	-L $(ARM_NONE_EABI_PATH) 
+	-L $(ARM_NONE_EABI_PATH) -lc -lg -lm -lstdc++ -lnosys
 
 # include flags
 INCLUDES := -I. -Isrc -I$(TIVAWARE_PATH)

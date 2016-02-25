@@ -2,6 +2,8 @@
 #include "Context.hpp"
 #include <cstdint>
 
+using namespace Context;
+
 extern "C" {
 namespace Scheduler {
 	extern Context::Context* getCurrentContext(void);
@@ -11,11 +13,18 @@ namespace Scheduler {
 
 void PendSVHandler(void) {
 	__asm__(
-		"bl getCurrentContext"
+		// "mov	r0,#0xE000ED04\n\t"
+		"movw	r0,#0xED04\n\t"
+		"movt	r0,#0xE000\n\t"
+		"mov	r1,#0x08000000\n\t"
+		"str 	r1,[r0]\n\t"
+		);
+	__asm__(
+		"bl 	getCurrentContext\n\t"
 		);
 	saveContext
 	__asm__(
-		"bl getNextContext"
+		"bl 	getNextContext\n\t"
 		);
 	loadContext
 }
